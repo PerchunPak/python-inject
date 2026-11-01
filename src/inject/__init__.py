@@ -431,7 +431,8 @@ class _ParametersInjection(t.Generic[T]):
                 )
                 for param, cls in params_to_provide.items():
                     if param not in provided_params:
-                        kwargs[param] = instance(cls)
+                        with contextlib.suppress(InjectorException):
+                            kwargs[param] = instance(cls)
                 async_func = t.cast("t.Callable[..., t.Awaitable[T]]", func)
                 try:
                     with contextlib.ExitStack() as sync_stack:
@@ -455,7 +456,8 @@ class _ParametersInjection(t.Generic[T]):
             )
             for param, cls in params_to_provide.items():
                 if param not in provided_params:
-                    kwargs[param] = instance(cls)
+                    with contextlib.suppress(InjectorException):
+                        kwargs[param] = instance(cls)
             sync_func = t.cast("t.Callable[..., T]", func)
             try:
                 with contextlib.ExitStack() as sync_stack:
